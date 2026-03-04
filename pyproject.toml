@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "civicsignal"
+version = "0.1.0"
+description = "Municipal meeting intelligence platform core"
+requires-python = ">=3.11"
+dependencies = [
+	"pypdf>=5.0.0",
+]
+
+[project.scripts]
+civicsignal = "civicsignal.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -43,6 +43,7 @@ Processing policy:
 - Primary: native PDF text extraction
 - Fallback: OCR only when necessary
 - Max file size: 25 MB
+- Connector-specific note: Legistar supporting documents should use `View.ashx` endpoints when available (not synthetic `MeetingDetail.aspx/...pdf` paths)
 
 ## Change Detection
 Track:
@@ -74,3 +75,8 @@ Group signals by combined signals from:
 - developer name match
 - address match
 - agenda title similarity
+
+## Signal Quality Gates
+- Prefer summary text sources in order: staff report → agenda packet → agenda item description → title-only fallback.
+- If content is unavailable or boilerplate-only, label summary as `Title-only: ...` and keep confidence low.
+- Persist summary provenance (`summary_source`) and availability (`content_available`) for downstream UX and QA.

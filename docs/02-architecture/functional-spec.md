@@ -30,6 +30,9 @@ Required connector types:
 - Hyland OnBase
 - CivicPlus
 
+Connector contract reference:
+- `docs/02-architecture/connector-interface-spec.md`
+
 Each connector must implement:
 - meeting discovery
 - agenda parsing
@@ -100,6 +103,13 @@ Signal detection combines:
 Rules:
 - one agenda item may produce multiple signals
 - each signal requires one primary category
+- summary generation must follow source precedence:
+	1. staff report text
+	2. agenda packet text
+	3. agenda item description
+	4. title-only fallback
+- if only title-level content is available, summary must be explicitly labeled `Title-only: <title>` and confidence must be `Low`
+- content-availability checks must reject boilerplate-only text as summary source
 
 ## Signal Object Schema
 - signal_id
@@ -111,11 +121,20 @@ Rules:
 - signal_type
 - title
 - summary
+- summary_source
+- content_available
 - confidence
 - project_entity_id
 - supporting_documents
 - source_urls
+- extraction_notes
 - created_at
+
+Signal summary semantics:
+- `summary` may be title-only fallback when richer text is unavailable.
+- `summary_source` enum: `staff_report`, `agenda_packet`, `item_description`, `title_only`.
+- `content_available=false` indicates summary was generated without meaningful body text.
+- `extraction_notes` should explain fallback/quality gate decisions.
 
 ## Project Entity Grouping
 Group related signals by:
