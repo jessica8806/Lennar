@@ -1,142 +1,55 @@
-# Lennar Land Acquisition — AI Workflow Skills
+# jessica8806 — Monorepo
 
-AI-assisted workflow tools for Lennar's land acquisition and finance teams. This project provides Claude skills (slash commands) that accelerate the most time-consuming parts of the land deal process — data normalization, entitlement research, scenario modeling, offer memo drafting, and forecast narrative.
+This repository contains two independent projects that share a single git repo for now.
 
 ---
 
-## What's In This Repo
+## Projects
 
+### Lennar Land Acquisition — AI Workflow Skills
+
+AI-assisted workflow tools for Lennar's land acquisition and finance teams. Claude skills (slash commands) that accelerate comp normalization, entitlement research, scenario modeling, offer memo drafting, and forecast narrative.
+
+**Root files:**
 ```
-CLAUDE.md                          Project context loaded automatically by Claude
-.claude/
-  commands/                        Claude skills — invoke with /skill-name
-    normalize-comps.md             Map raw comp data to the Lennar schema
-    entitlement-summary.md         Extract density, setbacks, entitlement path from zoning docs
-    scenario-model.md              Compare product scenarios and quantify trade-offs
-    offer-memo.md                  Draft an IC-ready offer memo from deal inputs
-    forecast-narrative.md          Convert 5-year model numbers into executive commentary
-  lennar-field-schema.md           Canonical field schema used by the normalize skill
-land-acquisition/
-  data/raw/                        Unprocessed comp reports, broker packages, MLS exports
-  data/normalized/                 Normalized comp data output
-  models/                          Proforma models and scenario outputs
-  entitlement/                     Zoning research and entitlement summaries
-  offers/                          Offer memos and IC submissions
+CLAUDE.md                   Project context, loaded automatically by Claude Code
+.claude/commands/           Claude skills — invoke with /skill-name
+land-acquisition/           Deal data, normalized comps, models, offers
 ```
 
----
+**Skills:** `/xls` `/normalize-comps` `/entitlement-summary` `/scenario-model` `/offer-memo` `/forecast-narrative`
 
-## Skills Quick Reference
-
-| Skill | Command | When to Use |
-|-------|---------|-------------|
-| Excel File Agent | `/xls` | You have an XLS/XLSX file and need to audit its structure, extract a sheet, or feed it into another skill |
-| Normalize Comps | `/normalize-comps` | You have a comp report (PDF, Excel, CSV) that needs to map into the underwriting model |
-| Entitlement Summary | `/entitlement-summary` | You have zoning code, staff reports, or parcel details and need a structured summary |
-| Scenario Model | `/scenario-model` | You want to compare product types, lot counts, or pricing assumptions side by side |
-| Offer Memo | `/offer-memo` | Underwriting is done and you need an IC-ready memo drafted |
-| Forecast Narrative | `/forecast-narrative` | You have 5-year model numbers and need written commentary for leadership |
+See [CLAUDE.md](./CLAUDE.md) for full context, terminology, and skill reference.
 
 ---
 
-## Getting Started
+### CivicSignal — Municipal Meeting Intelligence
 
-These skills run inside [Claude Code](https://claude.ai/code). No installation required beyond having Claude Code access.
+Municipal meeting intelligence platform. Tracks city/county planning signals from Granicus and Legistar sources.
 
-**To invoke a skill:**
+**Root files:**
 ```
-/xls land-acquisition/data/raw/comps.xlsx audit
-/normalize-comps land-acquisition/data/raw/broker-package-march.pdf built_after=2018 lot_min=4000
-/entitlement-summary
-/offer-memo
+civicsignal/
+  src/civicsignal/          Python backend and connectors
+  tests/                    Test suite
+  docs/                     PRD, architecture, roadmap, task docs
+  api/                      Vercel serverless entry point
+  pyproject.toml            Package config
+  requirements.txt          Dependencies
+  vercel.json               Vercel deployment config
 ```
 
-**To load project context**, Claude automatically reads `CLAUDE.md` at the start of each session. This file contains the terminology glossary, deal stage definitions, and output formatting standards that all skills use.
+**Dev setup:**
+```bash
+cd civicsignal
+pip install -r requirements.txt
+python -m civicsignal
+```
 
 ---
 
-## The XLS Skill — Excel File Agent
+## Repo Notes
 
-Use `/xls` to inspect, extract, or convert any Excel file before (or instead of) normalization. Operations: `audit` (default), `extract`, `normalize`, `to-markdown`, `summary`. The `normalize` operation runs audit then passes the comp sheet directly into the normalize workflow.
-
----
-
-## The Normalize Skill — How It Works
-
-The most detailed skill in this project. When you run `/normalize-comps` with a file path, it:
-
-1. Reads and inventories the source file (any format)
-2. Applies analyst-specified filters (year built, lot size, price range, geography)
-3. Maps every source field to the Lennar schema using `lennar-field-schema.md`
-4. Assigns confidence scores (High / Medium / Low) to each mapping
-5. Produces a 5-tab Excel output:
-   - `Normalized_Data` — records mapped to Lennar schema column order
-   - `Mapping_Log` — full audit trail with confidence scores and color coding
-   - `Missing_Fields` — required fields not found in source
-   - `Filtered_Out` — excluded records with filter reasons
-   - `Summary` — data quality score and key stats
-
-**Output file naming:** `Lennar_Normalized_[SourceFileName]_[YYYYMMDD].xlsx`
-**Output location:** `land-acquisition/data/normalized/`
-
----
-
-## Field Schema
-
-The file `.claude/lennar-field-schema.md` is the canonical reference for the normalize skill. It defines:
-
-- 35 fields across 5 categories (property ID, lot/land, home characteristics, sale/financial, comp analysis)
-- Required vs. optional status for each field
-- Known synonyms — what external sources (MLS, CoStar, broker packages) call the same field
-- Common mapping ambiguities and how to resolve them
-- Fields that must never be estimated or invented
-
-**Before deploying in production**, the Lennar land team should validate:
-- Any Lennar-specific fields not yet in the schema (division codes, deal IDs, underwriter IDs)
-- Exact column order the Excel model expects
-- Which fields are auto-calculated in the model (do not populate those)
-- Source-specific synonyms from CoStar, Metrostudy, and internal deal database
-
----
-
-## Terminology
-
-All skills use Lennar-standard terminology. Key terms:
-
-| Term | Meaning |
-|------|---------|
-| Home site | An individual lot (never "lot" in formal outputs) |
-| ASP | Average Sale Price |
-| Pace | Sales velocity in homes/month |
-| Community | A single Lennar development project |
-| IC | Investment Committee |
-| Tranches | Phased land closing installments |
-| Product type | SFD / SFA / TH |
-| Comp / Resale | Comparable sale used for benchmarking |
-
-Full glossary and deal stage definitions are in `CLAUDE.md`.
-
----
-
-## Project Status
-
-| Component | Status |
-|-----------|--------|
-| CLAUDE.md — project context | Complete |
-| 6 core skills (normalize, entitlement, scenario, offer memo, forecast, xls) | Complete |
-| normalize skill — detailed version | Complete |
-| xls skill — Excel file agent | Complete |
-| lennar-field-schema.md | Complete (pending Lennar team validation) |
-| Sample normalized output (examples/) | Complete |
-| Normalized OC comp report (Q4 2023–Q1 2024) | Complete |
-| Lennar team schema validation | Pending discovery session |
-| Source-specific synonym expansions | Pending (CoStar, Metrostudy, MLS) |
-
----
-
-## What's Next
-
-1. **Lennar team discovery session** — validate field schema, confirm column order, identify missing fields and data sources
-2. **Expand synonyms** — add CoStar, Metrostudy, MLS field names to `lennar-field-schema.md` once sources are confirmed
-3. **Build out remaining skills** — deepen entitlement-summary, scenario-model, offer-memo with the same level of detail as normalize
-4. **Add division and deal-ID fields** — extend schema with any Lennar-internal identifiers confirmed during discovery
+- `.claude/commands/` stays at the repo root — Claude Code requires it there to load skills
+- `.github/` stays at root — GitHub requires it there for issue templates
+- These two projects will likely move to separate repos once the Lennar project is further along
