@@ -30,6 +30,7 @@ land-acquisition/
 
 | Skill | Command | When to Use |
 |-------|---------|-------------|
+| Excel File Agent | `/xls` | You have an XLS/XLSX file and need to audit its structure, extract a sheet, or feed it into another skill |
 | Normalize Comps | `/normalize-comps` | You have a comp report (PDF, Excel, CSV) that needs to map into the underwriting model |
 | Entitlement Summary | `/entitlement-summary` | You have zoning code, staff reports, or parcel details and need a structured summary |
 | Scenario Model | `/scenario-model` | You want to compare product types, lot counts, or pricing assumptions side by side |
@@ -44,12 +45,19 @@ These skills run inside [Claude Code](https://claude.ai/code). No installation r
 
 **To invoke a skill:**
 ```
+/xls land-acquisition/data/raw/comps.xlsx audit
 /normalize-comps land-acquisition/data/raw/broker-package-march.pdf built_after=2018 lot_min=4000
 /entitlement-summary
 /offer-memo
 ```
 
 **To load project context**, Claude automatically reads `CLAUDE.md` at the start of each session. This file contains the terminology glossary, deal stage definitions, and output formatting standards that all skills use.
+
+---
+
+## The XLS Skill — Excel File Agent
+
+Use `/xls` to inspect, extract, or convert any Excel file before (or instead of) normalization. Operations: `audit` (default), `extract`, `normalize`, `to-markdown`, `summary`. The `normalize` operation runs audit then passes the comp sheet directly into the normalize workflow.
 
 ---
 
@@ -115,10 +123,12 @@ Full glossary and deal stage definitions are in `CLAUDE.md`.
 | Component | Status |
 |-----------|--------|
 | CLAUDE.md — project context | Complete |
-| 5 core skills (scaffold) | Complete |
-| normalize skill — detailed version | In review |
+| 6 core skills (normalize, entitlement, scenario, offer memo, forecast, xls) | Complete |
+| normalize skill — detailed version | Complete |
+| xls skill — Excel file agent | Complete |
 | lennar-field-schema.md | Complete (pending Lennar team validation) |
-| Sample normalized output (examples/) | Not yet created |
+| Sample normalized output (examples/) | Complete |
+| Normalized OC comp report (Q4 2023–Q1 2024) | Complete |
 | Lennar team schema validation | Pending discovery session |
 | Source-specific synonym expansions | Pending (CoStar, Metrostudy, MLS) |
 
@@ -127,7 +137,6 @@ Full glossary and deal stage definitions are in `CLAUDE.md`.
 ## What's Next
 
 1. **Lennar team discovery session** — validate field schema, confirm column order, identify missing fields and data sources
-2. **Save final normalize skill** — incorporate review feedback, add to `.claude/commands/`
-3. **Create sample output** — `examples/sample-normalized-output.md` for few-shot quality
-4. **Expand synonyms** — add CoStar, Metrostudy, MLS field names once sources are confirmed
-5. **Build out remaining skills** — deepen entitlement-summary, scenario-model, offer-memo with the same level of detail as normalize
+2. **Expand synonyms** — add CoStar, Metrostudy, MLS field names to `lennar-field-schema.md` once sources are confirmed
+3. **Build out remaining skills** — deepen entitlement-summary, scenario-model, offer-memo with the same level of detail as normalize
+4. **Add division and deal-ID fields** — extend schema with any Lennar-internal identifiers confirmed during discovery

@@ -74,6 +74,7 @@ All skill outputs must follow these standards:
 
 | Skill | Invoke with | Purpose |
 |-------|-------------|---------|
+| Excel File Agent | `/xls` | Reads, audits, extracts, and converts XLS/XLSX files; feeds into other skills |
 | Normalize Comp Data | `/normalize-comps` | Maps raw comp data from any source to the standard schema |
 | Entitlement Summary | `/entitlement-summary` | Extracts density, setbacks, and entitlement path from zoning docs |
 | Scenario Modeling | `/scenario-model` | Compares product scenarios and quantifies trade-offs |

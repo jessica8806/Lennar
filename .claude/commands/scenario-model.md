@@ -36,15 +36,20 @@ For each alternative scenario:
 
 **Scenario: [Name]**
 - Change from base: [what changed]
-- Lot count delta: +/- X
-- Revenue impact: +/- $X
-- Cost impact: +/- $X
+- Home site count delta: +/- X
+- Revenue impact: +/- X
+- Cost impact: +/- X
 - Margin impact: +/- X pts
 - Key risk: [what could go wrong]
 - Key upside: [what could go right]
 
+### Hurdle Rate Context
+
+> **Placeholder — confirm with Lennar Finance team.**
+> Expected hurdle rates may include minimum gross margin %, return on cost, and/or IRR thresholds by product type or division. Flag any scenario that falls below hurdle thresholds.
+
 ### Recommendation
-Which scenario best balances return, risk, and absorption pace, and why.
+Which scenario best balances return, risk, and absorption pace, and why. Note whether the recommended scenario clears all applicable hurdle rates.
 
 ---
 
